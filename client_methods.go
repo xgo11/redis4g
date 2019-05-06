@@ -116,8 +116,10 @@ func (c *WrapClient) HGet(k, fieldName string) string {
 }
 
 func (c *WrapClient) HSet(k, fieldName string, value interface{}) bool {
-	r, _ := c.connection.HSet(c.TransformKey(k), fieldName, value).Result()
-	return r
+	if _, err := c.connection.HSet(c.TransformKey(k), fieldName, value).Result(); err != nil {
+		return false
+	}
+	return true
 }
 
 func (c *WrapClient) HMGet(k string, fields ...string) []interface{} {
